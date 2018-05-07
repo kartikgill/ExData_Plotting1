@@ -1,12 +1,31 @@
-setwd("C:/Users/anne/Desktop/DataScienceFiles")
-
-# Read from data and create subset of required parameters
-Hpower <- read.table("household_power_consumption.txt",skip=1,sep=";",na.strings = "?")
-names(Hpower) <- c("Date","Time","Global_active_power","Global_reactive_power","Voltage","Global_intensity","Sub_metering_1","Sub_metering_2","Sub_metering_3")
-subHpower <- subset(Hpower,Hpower$Date=="1/2/2007" | Hpower$Date =="2/2/2007")
-
-#plot graph
-hist(as.numeric(as.character(subHpower$Global_active_power)),col="red",main="Global Active Power",xlab="Global Active Power (kilowatts)")
-
-# Add title to graph
-title(main="Global Active Power")
+plot1<- function(){
+        ## Aim of this function is to 
+        ## 1. read the household_power_consumption.txt file
+        ## 2. subset for data taken from 2 days: 2007-02-01 and 2007-02-02
+        ## 3. generate a histogram of global active power(kilowatts)
+        
+        ## Parameters: none
+        ## Assumes household_power_consumption.txt file located in working dir
+        
+        ## read data
+        powerdata <- read.table("./household_power_consumption.txt", stringsAsFactors = FALSE, header = TRUE, sep =";"  )
+        
+        ## change class of all columns to correct class
+        powerdata$Date <- as.Date(powerdata$Date, format="%d/%m/%Y")
+        powerdata$Time <- format(powerdata$Time, format="%H:%M:%S")
+        powerdata$Global_active_power <- as.numeric(powerdata$Global_active_power)
+        powerdata$Global_reactive_power <- as.numeric(powerdata$Global_reactive_power)
+        powerdata$Voltage <- as.numeric(powerdata$Voltage)
+        powerdata$Global_intensity <- as.numeric(powerdata$Global_intensity)
+        powerdata$Sub_metering_1 <- as.numeric(powerdata$Sub_metering_1)
+        powerdata$Sub_metering_2 <- as.numeric(powerdata$Sub_metering_2)
+        powerdata$Sub_metering_3 <- as.numeric(powerdata$Sub_metering_3)
+        
+        ## subset data from 2007-02-01 and 2007-02-02
+        subsetdata <- subset(powerdata, Date == "2007-02-01" | Date =="2007-02-02")
+        
+        ## plot histogram of global active power for those 2 days
+        png("plot1.png", width=480, height=480)
+        hist(subsetdata$Global_active_power, col="red", border="black", main ="Global Active Power", xlab="Global Active Power (kilowatts)", ylab="Frequency")
+        dev.off()
+}
